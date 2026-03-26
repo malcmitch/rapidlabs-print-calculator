@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RapidLabs Print Quote Calculator | Instant Wide-Format Pricing</title>
+  <meta name="description" content="Get an instant wide-format print quote in seconds. Banners, vehicle wraps, acrylic signs, vinyl decals, backlit displays, canvas prints — Houston TX." />
+  <meta property="og:title" content="RapidLabs Print Quote Calculator" />
+  <meta property="og:description" content="Instant wide-format printing quotes. Banners, wraps, signs, decals, acrylic — Houston TX. Roland TrueVIS quality." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://malcmitch.github.io/rapidlabs-print-calculator/" />
+  <meta property="og:image" content="https://surething.io/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RapidLabs Print Quote Calculator" />
+  <meta name="twitter:description" content="Instant wide-format printing quotes — Houston TX." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --surface2: #1c1c26;
+      --border: #2a2a3a;
+      --accent: #6c63ff;
+      --accent2: #a78bfa;
+      --success: #10b981;
+      --text: #e8e8f0;
+      --muted: #8888aa;
+      --radius: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,15,0.9);
+    }
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-badge {
+      font-size: 0.75rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.25rem 0.75rem;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 5rem 1.5rem 3rem;
+      background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(108,99,255,0.18) 0%, transparent 70%);
+    }
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent2);
+      background: rgba(108,99,255,0.12);
+      border: 1px solid rgba(108,99,255,0.3);
+      border-radius: 20px;
+      padding: 0.3rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 0.5rem;
+    }
+    .hero-location {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+    .hero-location span {
+      color: var(--accent2);
+    }
+
+    /* CALCULATOR WRAPPER */
+    .calc-wrap {
+      max-width: 860px;
+      margin: 3rem auto;
+      padding: 0 1.25rem;
+    }
+
+    /* PRINT TYPE TABS */
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+    }
+    .type-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 0.75rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .type-card:hover { border-color: var(--accent); background: var(--surface2); }
+    .type-card.active {
+      border-color: var(--accent);
+      background: rgba(108,99,255,0.12);
+    }
+    .type-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    .type-label { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+    .type-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
+
+    /* FORM */
+    .form-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .form-section h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--accent2);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    @media(max-width:600px){ .form-grid { grid-template-columns: 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .field.full { grid-column: 1 / -1; }
+    label { font-size: 0.82rem; font-weight: 500; color: var(--muted); }
+    input[type="number"], select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.95rem;
+      padding: 0.65rem 0.9rem;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    input[type="number"]:focus, select:focus { border-color: var(--accent); }
+    .unit-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .unit-row input { flex: 1; }
+    .unit-toggle {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 0 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .unit-toggle.active-unit { color: var(--accent2); border-color: var(--accent); }
+
+    /* FINISH SELECT */
+    .finish-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+    .finish-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      padding: 0.4rem 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .finish-btn.active { border-color: var(--accent); color: var(--accent2); background: rgba(108,99,255,0.1); }
+
+    /* RUSH TOGGLE */
+    .rush-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+      cursor: pointer;
+      grid-column: 1 / -1;
+    }
+    .rush-label { font-size: 0.9rem; }
+    .rush-sub { font-size: 0.75rem; color: var(--muted); }
+    .toggle-pill {
+      width: 42px; height: 24px;
+      background: var(--border);
+      border-radius: 12px;
+      position: relative;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-pill.on { background: var(--accent); }
+    .toggle-pill::after {
+      content: '';
+      position: absolute;
+      width: 18px; height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      top: 3px; left: 3px;
+      transition: transform 0.2s;
+    }
+    .toggle-pill.on::after { transform: translateX(18px); }
+
+    /* QUOTE BUTTON */
+    .quote-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 1rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.01em;
+      margin-top: 0.5rem;
+    }
+    .quote-btn:hover { opacity: 0.92; }
+    .quote-btn:active { transform: scale(0.98); }
+
+    /* RESULT */
+    .result-box {
+      background: linear-gradient(135deg, rgba(108,99,255,0.1), rgba(167,139,250,0.06));
+      border: 1px solid rgba(108,99,255,0.4);
+      border-radius: var(--radius);
+      padding: 2rem;
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+    .result-box.show { display: block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    .result-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    .result-price {
+      font-size: clamp(2.5rem, 7vw, 4.5rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+    .result-range { font-size: 0.9rem; color: var(--muted); margin-top: 0.3rem; }
+    .result-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .meta-item { }
+    .meta-key { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.2rem; }
+    .meta-val { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+    .result-disclaimer { font-size: 0.75rem; color: var(--muted); margin-top: 1.25rem; line-height: 1.5; }
+    .cta-get-quote {
+      display: inline-block;
+      margin-top: 1.5rem;
+      background: var(--success);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .cta-get-quote:hover { opacity: 0.88; }
+
+    /* WHAT WE PRINT SECTION */
+    .capabilities {
+      max-width: 860px;
+      margin: 4rem auto 2rem;
+      padding: 0 1.25rem;
+    }
+    .capabilities h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .capabilities .sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .cap-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .cap-card .cap-icon { font-size: 1.6rem; margin-bottom: 0.6rem; }
+    .cap-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .cap-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+    /* TESTIMONIAL / WHY */
+    .why-section {
+      max-width: 860px;
+      margin: 2rem auto;
+      padding: 0 1.25rem;
+    }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .why-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .why-num {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .why-card p { font-size: 0.82rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* CTA SURETHING */
+    .surething-cta {
+      max-width: 860px;
+      margin: 4rem auto 2rem;
+      padding: 0 1.25rem;
+    }
+    .surething-box {
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(108,99,255,0.08) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    .surething-box h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .surething-box p { font-size: 0.9rem; color: var(--muted); margin-bottom: 1.5rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .surething-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.75rem 2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .surething-btn:hover { opacity: 0.88; }
+    .surething-logo-tag { font-size: 0.75rem; color: var(--muted); margin-top: 1rem; }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    footer a { color: var(--accent2); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">⚡ RapidLabs</div>
+  <div class="nav-badge">Houston, TX · Roland TrueVIS Quality</div>
+</nav>
+
+<header class="hero">
+  <div class="hero-tag">Instant Wide-Format Quote</div>
+  <h1>Get Your <span>Print Quote</span><br/>in Seconds</h1>
+  <p class="hero-sub">Banners, vehicle wraps, acrylic signs, vinyl decals, canvas, backlit film — professional wide-format printing.</p>
+  <p class="hero-location">📍 Based in <span>Houston, TX</span> · Ships nationwide</p>
+</header>
+
+<div class="calc-wrap">
+
+  <!-- PRINT TYPE -->
+  <div class="type-grid">
+    <div class="type-card active" data-type="banner" onclick="selectType(this,'banner')">
+      <div class="type-icon">🏁</div>
+      <div class="type-label">Banners</div>
+      <div class="type-sub">Vinyl / Mesh</div>
+    </div>
+    <div class="type-card" data-type="decal" onclick="selectType(this,'decal')">
+      <div class="type-icon">🚗</div>
+      <div class="type-label">Vehicle Decals</div>
+      <div class="type-sub">Wraps / Graphics</div>
+    </div>
+    <div class="type-card" data-type="sign" onclick="selectType(this,'sign')">
+      <div class="type-icon">🪧</div>
+      <div class="type-label">Signs & Plaques</div>
+      <div class="type-sub">Acrylic / Foam / Metal</div>
+    </div>
+    <div class="type-card" data-type="canvas" onclick="selectType(this,'canvas')">
+      <div class="type-icon">🖼️</div>
+      <div class="type-label">Canvas Prints</div>
+      <div class="type-sub">Gallery Wrap</div>
+    </div>
+    <div class="type-card" data-type="backlit" onclick="selectType(this,'backlit')">
+      <div class="type-icon">💡</div>
+      <div class="type-label">Backlit Film</div>
+      <div class="type-sub">Lightbox / Retail</div>
+    </div>
+    <div class="type-card" data-type="floor" onclick="selectType(this,'floor')">
+      <div class="type-icon">🦶</div>
+      <div class="type-label">Floor Graphics</div>
+      <div class="type-sub">Anti-Slip Vinyl</div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-section">
+    <h3>📐 Dimensions &amp; Specs</h3>
+    <div class="form-grid">
+
+      <div class="field">
+        <label for="width">Width</label>
+        <div class="unit-row">
+          <input type="number" id="width" min="1" max="1000" value="36" />
+          <button class="unit-toggle active-unit" id="unitInBtn" onclick="setUnit('in')" type="button">in</button>
+          <button class="unit-toggle" id="unitFtBtn" onclick="setUnit('ft')" type="button">ft</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="height">Height</label>
+        <input type="number" id="height" min="1" max="1000" value="24" />
+      </div>
+
+      <div class="field">
+        <label for="qty">Quantity</label>
+        <select id="qty">
+          <option value="1">1 piece</option>
+          <option value="2">2 pieces</option>
+          <option value="3">3 pieces</option>
+          <option value="5">5 pieces</option>
+          <option value="10">10 pieces</option>
+          <option value="25">25 pieces</option>
+          <option value="50">50 pieces</option>
+          <option value="100">100 pieces</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="material">Material / Substrate</label>
+        <select id="material">
+          <option value="banner">13oz Banner Vinyl</option>
+          <option value="mesh">Mesh Banner</option>
+          <option value="adhesive">Adhesive Vinyl</option>
+          <option value="canvas">Canvas</option>
+          <option value="backlit">Backlit Film</option>
+          <option value="acrylic">Acrylic (1/4")</option>
+          <option value="foam">Foam Board</option>
+          <option value="mdf">MDF / Wood</option>
+          <option value="floor">Anti-Slip Floor Vinyl</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label>Finish</label>
+        <div class="finish-group">
+          <button class="finish-btn active" data-finish="matte" onclick="selectFinish(this)" type="button">Matte</button>
+          <button class="finish-btn" data-finish="gloss" onclick="selectFinish(this)" type="button">Gloss</button>
+          <button class="finish-btn" data-finish="satin" onclick="selectFinish(this)" type="button">Satin</button>
+          <button class="finish-btn" data-finish="lam-matte" onclick="selectFinish(this)" type="button">+ Laminate Matte</button>
+          <button class="finish-btn" data-finish="lam-gloss" onclick="selectFinish(this)" type="button">+ Laminate Gloss</button>
+        </div>
+      </div>
+
+      <div class="rush-row full" onclick="toggleRush()" id="rushRow">
+        <div>
+          <div class="rush-label">⚡ Rush Turnaround</div>
+          <div class="rush-sub">Standard: 3–5 business days · Rush: 1–2 business days (+30%)</div>
+        </div>
+        <div class="toggle-pill" id="rushToggle"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="quote-btn" onclick="calculateQuote()" type="button">✦ Calculate My Quote</button>
+
+  <!-- RESULT -->
+  <div class="result-box" id="resultBox">
+    <div class="result-label">Estimated Print Cost</div>
+    <div class="result-price" id="resultPrice">$0</div>
+    <div class="result-range" id="resultRange"></div>
+    <div class="result-meta">
+      <div class="meta-item">
+        <div class="meta-key">Sq Ft</div>
+        <div class="meta-val" id="metaSqft">—</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-key">Price / Sq Ft</div>
+        <div class="meta-val" id="metaPsf">—</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-key">Turnaround</div>
+        <div class="meta-val" id="metaTurnaround">—</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-key">Printer Used</div>
+        <div class="meta-val" id="metaPrinter">—</div>
+      </div>
+    </div>
+    <p class="result-disclaimer">* Estimate only. Final pricing varies by design complexity, finishing, and shipping. Get a confirmed quote below.</p>
+    <a class="cta-get-quote" href="mailto:rapidlabs.houston@gmail.com?subject=Print%20Quote%20Request&body=Hi%2C%20I%27d%20like%20a%20quote%20for%20a%20wide-format%20print%20job." target="_blank">📩 Lock In My Quote</a>
+  </div>
+
+</div>
+
+<!-- CAPABILITIES -->
+<section class="capabilities">
+  <h2>What We Print</h2>
+  <p class="sub">Dual Roland TrueVIS 64" printer/cutters — UV-LED &amp; eco-solvent. One shop, full coverage.</p>
+  <div class="cap-grid">
+    <div class="cap-card">
+      <div class="cap-icon">🖨️</div>
+      <h4>Roland LG-640 (UV-LED)</h4>
+      <p>Rigid substrates: acrylic, foam board, MDF, metal, glass. Signs, plaques, exhibit panels.</p>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">🎨</div>
+      <h4>Roland VG3-640 (Eco-Solvent)</h4>
+      <p>Flexible substrates: adhesive vinyl, banner, canvas, backlit film. Wraps, decals, displays.</p>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">📏</div>
+      <h4>Up to 64" Wide</h4>
+      <p>Full-bleed wide-format prints. No piecing, no seams on most jobs.</p>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">🚚</div>
+      <h4>Ship Nationwide</h4>
+      <p>Houston-based production. Rush 1–2 day turnaround available. Flat-packed or rolled.</p>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">🏛️</div>
+      <h4>Government Ready</h4>
+      <p>GSA/DLA/VA supplier. SAM.gov registered. Net-30 invoicing available for approved contractors.</p>
+    </div>
+    <div class="cap-card">
+      <div class="cap-icon">⭐</div>
+      <h4>Finished &amp; Installed</h4>
+      <p>Grommets, hemming, mounting hardware, lamination, contour cut — full finishing in-house.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why-section">
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-num">64"</div>
+      <p>Max print width — no joins on most jobs</p>
+    </div>
+    <div class="why-card">
+      <div class="why-num">2</div>
+      <p>Production printers in-house — no outsourcing</p>
+    </div>
+    <div class="why-card">
+      <div class="why-num">1–2</div>
+      <p>Business day rush turnaround available</p>
+    </div>
+    <div class="why-card">
+      <div class="why-num">Net-30</div>
+      <p>Available for government contractors</p>
+    </div>
+  </div>
+</section>
+
+<!-- SURETHING CTA -->
+<div class="surething-cta">
+  <div class="surething-box">
+    <h3>⚡ This calculator was built by an AI agent</h3>
+    <p>SureThing is the autonomous AI that remembers who you are, handles your inbox, and builds tools like this while you sleep. One person should be enough.</p>
+    <a class="surething-btn" href="https://surething.io" target="_blank" rel="noopener">Try SureThing Free →</a>
+    <p class="surething-logo-tag">surething.io · Your digital twin</p>
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 RapidLabs — Houston, TX ·
+  <a href="mailto:rapidlabs.houston@gmail.com">rapidlabs.houston@gmail.com</a> ·
+  Built with <a href="https://surething.io" target="_blank">SureThing</a>
+</footer>
+
+<script>
+  let currentUnit = 'in';
+  let rushOn = false;
+  let selectedFinish = 'matte';
+
+  const RATES = {
+    banner:   { psf: 2.20, printer: 'VG3-640 (Eco-Solvent)' },
+    mesh:     { psf: 2.60, printer: 'VG3-640 (Eco-Solvent)' },
+    adhesive: { psf: 3.40, printer: 'VG3-640 (Eco-Solvent)' },
+    canvas:   { psf: 4.50, printer: 'VG3-640 (Eco-Solvent)' },
+    backlit:  { psf: 5.20, printer: 'VG3-640 (Eco-Solvent)' },
+    acrylic:  { psf: 9.80, printer: 'LG-640 (UV-LED)' },
+    foam:     { psf: 3.80, printer: 'LG-640 (UV-LED)' },
+    mdf:      { psf: 6.50, printer: 'LG-640 (UV-LED)' },
+    floor:    { psf: 4.20, printer: 'VG3-640 (Eco-Solvent)' }
+  };
+
+  const FINISH_MULT = {
+    matte: 1.0,
+    gloss: 1.0,
+    satin: 1.02,
+    'lam-matte': 1.18,
+    'lam-gloss': 1.22
+  };
+
+  const QTY_DISC = {
+    1: 1.0, 2: 0.97, 3: 0.95, 5: 0.93, 10: 0.88,
+    25: 0.83, 50: 0.78, 100: 0.72
+  };
+
+  const MIN_CHARGE = 35;
+
+  function setUnit(u) {
+    currentUnit = u;
+    document.getElementById('unitInBtn').classList.toggle('active-unit', u === 'in');
+    document.getElementById('unitFtBtn').classList.toggle('active-unit', u === 'ft');
+  }
+
+  function selectType(el, type) {
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    const matSel = document.getElementById('material');
+    const map = {
+      banner: 'banner', decal: 'adhesive', sign: 'acrylic',
+      canvas: 'canvas', backlit: 'backlit', floor: 'floor'
+    };
+    if (map[type]) matSel.value = map[type];
+  }
+
+  function selectFinish(el) {
+    document.querySelectorAll('.finish-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    selectedFinish = el.dataset.finish;
+  }
+
+  function toggleRush() {
+    rushOn = !rushOn;
+    document.getElementById('rushToggle').classList.toggle('on', rushOn);
+  }
+
+  function calculateQuote() {
+    const wVal = parseFloat(document.getElementById('width').value) || 0;
+    const hVal = parseFloat(document.getElementById('height').value) || 0;
+    const qty   = parseInt(document.getElementById('qty').value) || 1;
+    const mat   = document.getElementById('material').value;
+
+    let wIn = currentUnit === 'ft' ? wVal * 12 : wVal;
+    let hIn = currentUnit === 'ft' ? hVal * 12 : hVal;
+
+    if (wIn <= 0 || hIn <= 0) {
+      alert('Please enter valid dimensions.');
+      return;
+    }
+
+    const sqft = (wIn * hIn) / 144;
+    const rate = RATES[mat] || RATES['banner'];
+    const fMult = FINISH_MULT[selectedFinish] || 1.0;
+    const qDisc = QTY_DISC[qty] || 0.70;
+    const rMult = rushOn ? 1.30 : 1.0;
+
+    let unitPrice = Math.max(sqft * rate.psf * fMult * rMult, MIN_CHARGE);
+    let total = unitPrice * qty * qDisc;
+    let totalLow = total * 0.88;
+    let totalHigh = total * 1.15;
+
+    const turnaround = rushOn ? '1–2 business days' : '3–5 business days';
+
+    document.getElementById('resultPrice').textContent = '$' + fmt(total);
+    document.getElementById('resultRange').textContent =
+      'Estimated range: $' + fmt(totalLow) + ' – $' + fmt(totalHigh);
+    document.getElementById('metaSqft').textContent = sqft.toFixed(2) + ' sq ft × ' + qty;
+    document.getElementById('metaPsf').textContent = '$' + (rate.psf * fMult).toFixed(2) + '/sq ft';
+    document.getElementById('metaTurnaround').textContent = turnaround;
+    document.getElementById('metaPrinter').textContent = rate.printer;
+
+    const box = document.getElementById('resultBox');
+    box.classList.remove('show');
+    void box.offsetWidth;
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function fmt(n) {
+    return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+</script>
+</body>
+</html>
